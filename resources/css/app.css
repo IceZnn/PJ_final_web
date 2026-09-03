@@ -1,0 +1,119 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+:root {
+    --azul-sesi: #005baa;
+    --azul-escuro: #003f78;
+    --fundo: #f4f7fa;
+    --texto: #17324d;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: 'Instrument Sans', sans-serif;
+}
+
+.header-sesi {
+    background: var(--azul-sesi);
+    color: #fff;
+    padding: 1rem 0;
+    box-shadow: 0 2px 8px rgb(0 63 120 / 18%);
+}
+
+.header-sesi-content {
+    align-items: center;
+    display: flex;
+    gap: 1.25rem;
+    margin: 0 auto;
+    max-width: 1120px;
+    padding: 0 1.5rem;
+}
+
+.header-logo {
+    border-right: 1px solid rgb(255 255 255 / 55%);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding-right: 1.25rem;
+}
+
+.header-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.formulario {
+    background: #fff;
+    border-radius: 0.4rem;
+    box-shadow: 0 8px 24px rgb(23 50 77 / 8%);
+    margin-bottom: 3rem;
+    margin-top: 2.5rem;
+    max-width: 1120px;
+    padding: 2.5rem;
+}
+
+.titulo {
+    color: var(--azul-escuro);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.form-control {
+    border-color: #c9d5e0;
+    min-height: 46px;
+}
+
+.form-control:focus {
+    border-color: var(--azul-sesi);
+    box-shadow: 0 0 0 0.2rem rgb(0 91 170 / 15%);
+}
+
+.btn-salvar {
+    background: var(--azul-sesi);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-top: 0.5rem;
+    padding: 0.75rem 2rem;
+}
+
+.btn-salvar:hover {
+    background: var(--azul-escuro);
+    color: #fff;
+}
+
+@media (max-width: 576px) {
+    .header-sesi-content {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .header-logo {
+        border-right: 0;
+        padding-right: 0;
+    }
+
+    .formulario {
+        border-radius: 0;
+        margin-top: 0;
+        padding: 1.5rem;
+    }
+}
