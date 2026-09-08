@@ -44,7 +44,8 @@
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <label for="cpf" class="form-label">CPF</label>
-                <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
+                <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Digite seu CPF"
+                    inputmode="numeric" maxlength="11" required>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <label for="escola" class="form-label">Escola</label>
@@ -53,6 +54,10 @@
 
             <div class="col-12 text-center">
                 <button id="cadastro_usuario" type="button" class="btn btn-salvar">CADASTRAR USUÁRIO</button>
+                <p class="mt-3 mb-0">
+                    Já possui cadastro?
+                    <a href="{{ route('login') }}" class="link-primary fw-semibold">Ir para o login</a>
+                </p>
             </div>
         </div>
     </main>

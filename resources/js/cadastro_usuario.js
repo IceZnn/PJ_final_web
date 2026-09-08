@@ -1,5 +1,9 @@
 $(document).ready(function() {
 
+    $("#cpf").on("input", function() {
+        this.value = this.value.replace(/\D/g, "").slice(0, 11);
+    });
+
     $("#cadastro_usuario").click(function() {
         const nome = $("#nome").val().trim();
         const email = $("#email").val().trim();
@@ -42,7 +46,9 @@ $(document).ready(function() {
                     return;
                 }
 
-                Swal.fire("Sucesso", response.mensagem, "success");
+                Swal.fire("Sucesso", response.mensagem, "success").then(function() {
+                    window.location.href = "/login";
+                });
             },
             error: function() {
                 Swal.fire("Erro", "Não foi possível cadastrar o usuário.", "error");
