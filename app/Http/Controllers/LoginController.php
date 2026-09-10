@@ -31,9 +31,6 @@ class LoginController extends Controller
             ], 200);
         }
 
-        $request->session()->regenerate();
-        $request->session()->put('usuario_id', $usuario->id);
-
         $tokenUsuario = new TokenUsuario;
         $tokenUsuario->usuario_id = $usuario->id;
         $tokenUsuario->token = bin2hex(random_bytes(32));
@@ -46,5 +43,14 @@ class LoginController extends Controller
             'token' => $tokenUsuario->token,
             'redirect' => route('inicio'),
         ], 200);
+    }
+
+    public function sair(Request $request)
+    {
+        TokenUsuario::where('token', $request->bearerToken())->delete();
+
+        return response()->json([
+            'mensagem' => 'Logout realizado com sucesso.',
+        ]);
     }
 }

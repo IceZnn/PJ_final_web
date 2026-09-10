@@ -12,4 +12,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('token.usuario');
 
 Route::post('/cadastro_usuario', [UsuarioController::class, 'cadastro_usuario']);
-Route::middleware('web')->post('/login', [LoginController::class, 'autenticar'])->name('api.login');
+Route::post('/login', [LoginController::class, 'autenticar'])->name('api.login');
+Route::post('/logout', [LoginController::class, 'sair'])->middleware('token.usuario')->name('api.logout');

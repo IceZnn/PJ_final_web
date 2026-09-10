@@ -37,6 +37,7 @@ $(document).ready(function () {
                 }
 
                 localStorage.setItem("token_usuario", response.token);
+                console.log("Token do usuário:", response.token);
 
                 Swal.fire({
                     icon: "success",

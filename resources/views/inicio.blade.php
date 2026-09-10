@@ -17,6 +17,7 @@
         <div class="header-sesi-content">
             <div class="header-logo">SESI</div>
             <div class="header-title">Sistema de Controle de Desperdício Alimentar</div>
+            <button type="button" id="botao-logout" class="btn btn-outline-light">Sair</button>
         </div>
     </header>
 
@@ -30,6 +31,27 @@
             });
         </script>
     @endif
+
+    <script>
+        console.log('Token do usuário:', localStorage.getItem('token_usuario'));
+
+        document.getElementById('botao-logout').addEventListener('click', async function () {
+            const token = localStorage.getItem('token_usuario');
+
+            try {
+                await fetch('{{ route('api.logout') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+            } finally {
+                localStorage.removeItem('token_usuario');
+                window.location.href = '{{ route('login') }}';
+            }
+        });
+    </script>
 </body>
 
 </html>
