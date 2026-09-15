@@ -10,5 +10,6 @@ Route::get('/', function () {
 
 Route::get('/login', [LoginController::class, 'formulario'])->name('login');
 Route::view('/inicio', 'inicio')->name('inicio');
+Route::view('/controle-desperdicio', 'controle_desperdicio')->name('controle.desperdicio');
 Route::get('/cadastro-usuario', [UsuarioController::class, 'cadastro_usuario_html'])->name('cadastro.usuario');
 Route::post('/cadastro_usuario', [UsuarioController::class, 'cadastro_usuario']);

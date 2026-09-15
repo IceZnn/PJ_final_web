@@ -46,7 +46,14 @@ $(document).ready(function() {
                     return;
                 }
 
-                Swal.fire("Sucesso", response.mensagem, "success").then(function() {
+                Swal.fire({
+                    title: "Sucesso",
+                    text: response.mensagem,
+                    icon: "success",
+                    timer: 1800,
+                    showConfirmButton: false,
+                    timerProgressBar: true
+                }).then(function() {
                     window.location.href = "/login";
                 });
             },

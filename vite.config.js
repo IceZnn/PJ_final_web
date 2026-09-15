@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/cadastro_usuario.js',
                 'resources/js/login.js',
+                'resources/js/inicio.js',
             ],
             refresh: true,
         }),
