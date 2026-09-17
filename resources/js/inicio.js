@@ -3,10 +3,37 @@ import Swal from 'sweetalert2';
 const formulario = document.getElementById('formulario-desperdicio');
 const faixaDesperdicio = document.getElementById('desperdicio');
 const valorDesperdicio = document.getElementById('valor_desperdicio');
+const quantidadePreparada = document.getElementById('quantidade');
+const valorPesoMeta = document.getElementById('valor_peso_meta');
 
-faixaDesperdicio.addEventListener('input', function () {
-    valorDesperdicio.textContent = faixaDesperdicio.value;
-});
+function atualizarMetaDesperdicio() {
+    if (!faixaDesperdicio || !valorDesperdicio) {
+        return;
+    }
+
+    const percentual = Number(faixaDesperdicio.value || 0);
+    const quantidade = Number(quantidadePreparada?.value || 0);
+    const pesoMaximo = quantidade > 0 ? (quantidade * percentual) / 100 : 0;
+
+    valorDesperdicio.textContent = String(percentual);
+
+    if (valorPesoMeta) {
+        valorPesoMeta.textContent = `até ${pesoMaximo.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })} kg`;
+    }
+}
+
+if (faixaDesperdicio) {
+    faixaDesperdicio.addEventListener('input', atualizarMetaDesperdicio);
+}
+
+if (quantidadePreparada) {
+    quantidadePreparada.addEventListener('input', atualizarMetaDesperdicio);
+}
+
+atualizarMetaDesperdicio();
 
 formulario.addEventListener('submit', async function (evento) {
     evento.preventDefault();
@@ -53,7 +80,7 @@ formulario.addEventListener('submit', async function (evento) {
             showConfirmButton: false,
             timerProgressBar: true,
         });
-        window.location.href = '/inicio';
+        window.location.href = `/registrar-desperdicio?refeicao_id=${dados.refeicao_id || ''}`;
     } catch (erro) {
         Swal.fire('Erro', erro.message, 'error');
     } finally {

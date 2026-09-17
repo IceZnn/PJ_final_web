@@ -16,17 +16,20 @@
         <div class="header-sesi-content">
             <div class="header-logo">SESI</div>
             <div class="header-title">Sistema de Controle de Desperdício Alimentar</div>
-            <a href="{{ route('inicio') }}" class="btn btn-outline-light">Início</a>
-            <button type="button" id="botao-logout" class="btn btn-outline-light">Sair</button>
+            <div class="page-header-actions">
+                <a href="{{ route('inicio') }}" class="btn btn-outline-light" data-user-route>Início</a>
+                <a href="{{ route('desperdicios.index') }}" class="btn btn-outline-light" data-user-route>Registros</a>
+                <button type="button" id="botao-logout" class="btn btn-outline-light">Sair</button>
+            </div>
         </div>
     </header>
 
     <main class="container formulario">
-        <div class="formulario-cabecalho">
+        <div class="formulario-cabecalho page-header">
             <div>
                 <p class="boas-vindas-etiqueta">NOVO REGISTRO</p>
-                <h1 class="titulo">Controle de desperdício</h1>
-                <p class="boas-vindas-texto">Preencha os dados da refeição preparada.</p>
+                <h1 class="titulo">Registrar refeição</h1>
+                <p class="boas-vindas-texto">Preencha os dados da refeição preparada e defina a meta ideal.</p>
             </div>
             <a href="{{ route('inicio') }}" class="link-voltar">Voltar para boas-vindas</a>
         </div>
@@ -66,8 +69,11 @@
                     <input type="number" class="form-control" id="quantidade" placeholder="Ex.: 25,50" min="0" step="0.01" required>
                 </div>
                 <div>
-                    <label for="desperdicio" class="form-label">Máximo de desperdício: <span id="valor_desperdicio">10</span>%</label>
-                    <input type="range" class="form-range" min="0" max="100" value="10" id="desperdicio">
+                    <label for="desperdicio" class="form-label">
+                        Máximo de desperdício: <span id="valor_desperdicio">10</span>%
+                        <small class="text-muted ms-2" id="valor_peso_meta">até 0,00 kg</small>
+                    </label>
+                    <input type="range" class="form-range" min="0" max="100" step="1" value="10" id="desperdicio">
                 </div>
             </div>
 
@@ -83,6 +89,13 @@
         </form>
     </main>
 
+    <footer class="site-footer">
+        <div class="container">
+            <small>© 2026 SESI · Sistema de Controle de Desperdício</small>
+            <a href="{{ route('inicio') }}">Voltar ao início</a>
+        </div>
+    </footer>
+
     <script>
         document.getElementById('botao-logout').addEventListener('click', async function () {
             const token = localStorage.getItem('token_usuario');
@@ -93,6 +106,7 @@
                 });
             } finally {
                 localStorage.removeItem('token_usuario');
+                localStorage.removeItem('usuario_id');
                 window.location.href = '{{ route('login') }}';
             }
         });

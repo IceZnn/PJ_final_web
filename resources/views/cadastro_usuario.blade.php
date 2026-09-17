@@ -17,15 +17,19 @@
     <title>Cadastro de Usuário</title>
 </head>
 
-<body>
+<body class="page-auth">
     <header class="header-sesi">
         <div class="header-sesi-content">
-            <div class="header-logo">SESI</div>
+            <span class="header-logo">SESI</span>
             <div class="header-title">Sistema de Controle de Desperdício Alimentar</div>
+            <div class="page-header-actions">
+                <a class="nav-link" href="{{ route('inicio') }}">Início</a>
+                <a class="btn btn-outline-light" href="{{ route('login') }}">Login</a>
+            </div>
         </div>
     </header>
 
-    <main class="container formulario">
+    <main class="container formulario auth-card">
         <h2 class="titulo">Cadastro de Usuário</h2>
 
         <div class="row g-4">

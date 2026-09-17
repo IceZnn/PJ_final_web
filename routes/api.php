@@ -18,3 +18,7 @@ Route::post('/logout', [LoginController::class, 'sair'])->middleware('token.usua
 Route::post('/desperdicios', [DesperdicioController::class, 'salvar'])
     ->middleware('token.usuario')
     ->name('api.desperdicios.salvar');
+
+Route::post('/desperdicios/peso', [DesperdicioController::class, 'salvarPeso'])
+    ->middleware('token.usuario')
+    ->name('api.desperdicios.peso');

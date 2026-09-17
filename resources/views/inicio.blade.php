@@ -14,43 +14,59 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand navbar-dark header-sesi">
-        <div class="container">
-            <a class="navbar-brand logo-sesi" href="{{ route('inicio') }}">SESI</a>
-
-            <div class="menu-principal" id="menuPrincipal">
-                <span class="navbar-text ms-lg-3">Sistema de Controle de Desperdício Alimentar</span>
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ route('inicio') }}">Início</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('controle.desperdicio') }}">Registrar desperdício</a>
-                    </li>
-                    <li class="nav-item">
-                        <button type="button" id="botao-logout" class="btn btn-outline-light mt-2 mt-lg-0">Sair</button>
-                    </li>
-                </ul>
+    <header class="header-sesi">
+        <div class="header-sesi-content">
+            <span class="header-logo">SESI</span>
+            <div class="header-title">Sistema de Controle de Desperdício Alimentar</div>
+            <div class="page-header-actions">
+                <a class="nav-link active" aria-current="page" href="{{ route('inicio') }}" data-user-route>Início</a>
+                <a class="nav-link" href="{{ route('dashboard') }}" data-user-route>Dashboard</a>
+                <a class="nav-link" href="{{ route('controle.desperdicio') }}" data-user-route>Registrar refeição</a>
+                <a class="nav-link" href="{{ route('desperdicios.index') }}" data-user-route>Registros</a>
+                <button type="button" id="botao-logout" class="btn btn-outline-light">Sair</button>
             </div>
         </div>
-    </nav>
+    </header>
 
     <main class="container tela-boas-vindas">
         <section class="boas-vindas">
             <p class="boas-vindas-etiqueta">SESI | GESTÃO ALIMENTAR</p>
             <h1 class="titulo">Olá, seja bem-vindo!</h1>
             <p class="boas-vindas-texto">Organize o acompanhamento das refeições e ajude sua escola a reduzir o desperdício.</p>
-            <a href="{{ route('controle.desperdicio') }}" class="btn btn-salvar">COMEÇAR UM REGISTRO</a>
+            <div class="d-flex flex-wrap gap-3">
+                <a href="{{ route('controle.desperdicio') }}" class="btn btn-salvar">CADASTRAR REFEIÇÃO</a>
+                <a href="{{ route('desperdicios.index') }}" class="btn btn-ghost-primary">VER REGISTROS</a>
+            </div>
         </section>
 
         <section class="boas-vindas-painel">
             <div class="boas-vindas-painel-numero">01</div>
             <div>
-                <h2>Registre todos os detalhes</h2>
-                <p>Informe o cardápio, o período, as salas atendidas e a quantidade preparada.</p>
+                <h2>Cadastre a refeição</h2>
+                <p>Informe o cardápio, o período, as salas atendidas, a quantidade preparada e a meta de desperdício.</p>
             </div>
         </section>
     </main>
+
+    <section class="feature-grid container">
+        <article class="feature-card">
+            <span class="tag">Meta</span>
+            <h3>Monitoramento diário</h3>
+            <p>Acompanhe facilmente as quantidades registradas e mantenha o controle do consumo em tempo real.</p>
+        </article>
+
+        <article class="feature-card">
+            <span class="tag">Ações</span>
+            <h3>Menos desperdício</h3>
+            <p>Identifique padrões e ajuste os preparos para reduzir perdas e otimizar o uso dos alimentos.</p>
+        </article>
+
+        <article class="feature-card">
+            <span class="tag">Relatório</span>
+            <h3>Visão clara</h3>
+            <p>Organize registros por período e tenha uma leitura simples dos dados de cada atendimento.</p>
+        </article>
+    </section>
 
     @if (session('sucesso'))
         <script>
@@ -63,8 +79,25 @@
         </script>
     @endif
 
+    <footer class="site-footer">
+        <div class="container">
+            <small>© 2026 SESI · Sistema de Controle de Desperdício</small>
+            <a href="{{ route('inicio') }}">Voltar ao início</a>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const usuarioId = localStorage.getItem('usuario_id');
+            document.querySelectorAll('[data-user-route]').forEach(function (link) {
+                if (!usuarioId) return;
+                const url = new URL(link.href, window.location.origin);
+                url.searchParams.set('usuario_id', usuarioId);
+                link.href = url.toString();
+            });
+        });
+
         console.log('Token do usuário:', localStorage.getItem('token_usuario'));
 
         document.getElementById('botao-logout').addEventListener('click', async function () {
@@ -80,6 +113,7 @@
                 });
             } finally {
                 localStorage.removeItem('token_usuario');
+                localStorage.removeItem('usuario_id');
                 window.location.href = '{{ route('login') }}';
             }
         });

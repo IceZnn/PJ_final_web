@@ -13,15 +13,19 @@
 	<title>Login</title>
 </head>
 
-<body>
+<body class="page-auth">
 	<header class="header-sesi">
 		<div class="header-sesi-content">
-			<div class="header-logo">SESI</div>
+			<span class="header-logo">SESI</span>
 			<div class="header-title">Sistema de Controle de Desperdício Alimentar</div>
+			<div class="page-header-actions">
+				<a class="nav-link" href="{{ route('inicio') }}">Início</a>
+				<a class="btn btn-outline-light" href="{{ route('cadastro.usuario') }}">Cadastre-se</a>
+			</div>
 		</div>
 	</header>
 
-	<main class="container formulario">
+	<main class="container formulario auth-card">
 		<h2 class="titulo">Login</h2>
 
 		<form id="formulario-login" method="POST" action="{{ route('api.login') }}">

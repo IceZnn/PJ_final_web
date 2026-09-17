@@ -41,6 +41,7 @@ class LoginController extends Controller
             'erro' => 'n',
             'mensagem' => 'Login realizado com sucesso!',
             'token' => $tokenUsuario->token,
+            'usuario_id' => $usuario->id,
             'redirect' => route('inicio'),
         ], 200);
     }
