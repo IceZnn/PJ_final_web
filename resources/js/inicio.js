@@ -1,90 +1,114 @@
 import Swal from 'sweetalert2';
 
-const formulario = document.getElementById('formulario-desperdicio');
-const faixaDesperdicio = document.getElementById('desperdicio');
-const valorDesperdicio = document.getElementById('valor_desperdicio');
-const quantidadePreparada = document.getElementById('quantidade');
-const valorPesoMeta = document.getElementById('valor_peso_meta');
-
-function atualizarMetaDesperdicio() {
-    if (!faixaDesperdicio || !valorDesperdicio) {
-        return;
+function carregarJQuery() {
+    if (window.jQuery) {
+        return Promise.resolve(window.jQuery);
     }
 
-    const percentual = Number(faixaDesperdicio.value || 0);
-    const quantidade = Number(quantidadePreparada?.value || 0);
-    const pesoMaximo = quantidade > 0 ? (quantidade * percentual) / 100 : 0;
-
-    valorDesperdicio.textContent = String(percentual);
-
-    if (valorPesoMeta) {
-        valorPesoMeta.textContent = `até ${pesoMaximo.toLocaleString('pt-BR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        })} kg`;
-    }
+    return new Promise(function (resolve, reject) {
+        const script = document.createElement('script');
+        script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js';
+        script.onload = function () {
+            resolve(window.jQuery);
+        };
+        script.onerror = function () {
+            reject(new Error('Não foi possível carregar a biblioteca do formulário.'));
+        };
+        document.head.appendChild(script);
+    });
 }
 
-if (faixaDesperdicio) {
-    faixaDesperdicio.addEventListener('input', atualizarMetaDesperdicio);
-}
+carregarJQuery().then(function ($) {
+    $(function () {
+        const formulario = $('#formulario-desperdicio');
+        const faixaDesperdicio = $('#desperdicio');
+        const valorDesperdicio = $('#valor_desperdicio');
+        const quantidadePreparada = $('#quantidade');
+        const valorPesoMeta = $('#valor_peso_meta');
 
-if (quantidadePreparada) {
-    quantidadePreparada.addEventListener('input', atualizarMetaDesperdicio);
-}
-
-atualizarMetaDesperdicio();
-
-formulario.addEventListener('submit', async function (evento) {
-    evento.preventDefault();
-
-    const salas = [...document.querySelectorAll('.sala:checked')].map((sala) => sala.value);
-    if (salas.length === 0) {
-        Swal.fire('Atenção', 'Selecione pelo menos uma sala.', 'warning');
-        return;
-    }
-
-    const botao = document.getElementById('btn_salvar');
-    botao.disabled = true;
-    botao.textContent = 'SALVANDO...';
-
-    try {
-        const resposta = await fetch('/api/desperdicios', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token_usuario')}`,
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({
-                cardapio: document.getElementById('cardapio').value,
-                periodo: document.querySelector('input[name="periodo"]:checked')?.value,
-                salas,
-                quantidade: document.getElementById('quantidade').value,
-                desperdicio: faixaDesperdicio.value,
-                observacoes: document.getElementById('observacoes').value,
-            }),
-        });
-
-        const dados = await resposta.json();
-        if (!resposta.ok) {
-            throw new Error(dados.message || 'Não foi possível salvar o controle.');
+        if (!formulario.length) {
+            return;
         }
 
-        await Swal.fire({
-            title: 'Sucesso',
-            text: dados.mensagem,
-            icon: 'success',
-            timer: 1800,
-            showConfirmButton: false,
-            timerProgressBar: true,
+        function atualizarMetaDesperdicio() {
+            const percentual = Number(faixaDesperdicio.val() || 0);
+            const quantidade = Number(quantidadePreparada.val() || 0);
+            const pesoMaximo = quantidade > 0 ? (quantidade * percentual) / 100 : 0;
+
+            valorDesperdicio.text(percentual);
+            valorPesoMeta.text(`até ${pesoMaximo.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            })} kg`);
+        }
+
+        faixaDesperdicio.on('input', atualizarMetaDesperdicio);
+        quantidadePreparada.on('input', atualizarMetaDesperdicio);
+        atualizarMetaDesperdicio();
+
+        formulario.on('submit', function (evento) {
+            evento.preventDefault();
+
+            const salas = $('.sala:checked').map(function () {
+                return this.value;
+            }).get();
+
+            if (salas.length === 0) {
+                Swal.fire('Atenção', 'Selecione pelo menos uma sala.', 'warning');
+                return;
+            }
+
+            const botao = $('#btn_salvar');
+            botao.prop('disabled', true).text('SALVANDO...');
+
+            $.ajax({
+                url: '/api/desperdicios',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token_usuario')}`,
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: JSON.stringify({
+                    cardapio: $('#cardapio').val(),
+                    periodo: $('input[name="periodo"]:checked').val(),
+                    salas: salas,
+                    quantidade: quantidadePreparada.val(),
+                    desperdicio: faixaDesperdicio.val(),
+                    observacoes: $('#observacoes').val(),
+                }),
+                success: function (dados) {
+                    Swal.fire({
+                        title: 'Sucesso',
+                        text: dados.mensagem,
+                        icon: 'success',
+                        timer: 1800,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                    }).then(function () {
+                        window.location.href = `/registrar-desperdicio?refeicao_id=${dados.refeicao_id || ''}`;
+                    });
+                },
+                error: function (xhr) {
+                    const errosValidacao = xhr.responseJSON?.errors;
+                    const primeiroErro = errosValidacao
+                        ? Object.values(errosValidacao).flat()[0]
+                        : null;
+                    const mensagem = primeiroErro
+                        || xhr.responseJSON?.mensagem
+                        || xhr.responseJSON?.message
+                        || 'Não foi possível salvar o controle.';
+
+                    Swal.fire('Erro', mensagem, 'error');
+                },
+                complete: function () {
+                    botao.prop('disabled', false).text('SALVAR CONTROLE');
+                },
+            });
         });
-        window.location.href = `/registrar-desperdicio?refeicao_id=${dados.refeicao_id || ''}`;
-    } catch (erro) {
-        Swal.fire('Erro', erro.message, 'error');
-    } finally {
-        botao.disabled = false;
-        botao.textContent = 'SALVAR CONTROLE';
-    }
+    });
+}).catch(function (erro) {
+    Swal.fire('Erro', erro.message, 'error');
 });

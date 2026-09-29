@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Desperdicio;
+use App\Models\TokenUsuario;
 use App\Models\Usuario;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -33,7 +34,8 @@ class DashboardTest extends TestCase
             'created_at' => now()->subMonth()->startOfMonth(),
         ]);
 
-        $response = $this->get(route('dashboard'));
+        $response = $this->withCookie('token', $this->createTokenFor($usuario->id))
+            ->get(route('dashboard'));
 
         $response->assertOk();
         $response->assertSee('25,50');
@@ -75,7 +77,8 @@ class DashboardTest extends TestCase
             'created_at' => now()->subDay(),
         ]);
 
-        $response = $this->get(route('dashboard'));
+        $response = $this->withCookie('token', $this->createTokenFor($usuario->id))
+            ->get(route('dashboard'));
         $periodData = $response->original->getData()['periodData'];
 
         $fundamental = collect($periodData)->firstWhere('label', 'Fundamental');
@@ -84,5 +87,18 @@ class DashboardTest extends TestCase
         $this->assertNotNull($fundamental);
         $this->assertNotNull($medio);
         $this->assertGreaterThan($fundamental['height'], $medio['height']);
+    }
+
+    private function createTokenFor(int $usuarioId): string
+    {
+        $token = bin2hex(random_bytes(16));
+
+        TokenUsuario::create([
+            'usuario_id' => $usuarioId,
+            'token' => $token,
+            'valido_ate' => now()->addDay(),
+        ]);
+
+        return $token;
     }
 }

@@ -1,3 +1,5 @@
+import Swal from 'sweetalert2';
+
 $(document).ready(function() {
 
     $("#cpf").on("input", function() {
@@ -5,13 +7,13 @@ $(document).ready(function() {
     });
 
     $("#cadastro_usuario").click(function() {
+        const botao = $(this);
         const nome = $("#nome").val().trim();
         const email = $("#email").val().trim();
         const senha = $("#senha").val();
         const cpf = $("#cpf").val().replace(/\D/g, "");
         const escola = $("#escola").val().trim();
 
-        //validação dos campos e tals
         if (!nome || !email || !senha || !cpf || !escola) {
             Swal.fire("Atenção", "Preencha todos os campos obrigatórios.", "warning");
             return;
@@ -27,9 +29,12 @@ $(document).ready(function() {
             return;
         }
         
+        botao.prop("disabled", true).text("CADASTRANDO...");
+
         $.ajax({
-            url: "api/cadastro_usuario",
+            url: "/api/cadastro_usuario",
             type: "POST",
+            dataType: "json",
             headers: {
                 "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
             },
@@ -43,6 +48,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.erro === "s") {
                     Swal.fire("Atenção", response.mensagem, "warning");
+                    botao.prop("disabled", false).text("CADASTRAR USUÁRIO");
                     return;
                 }
 
@@ -57,8 +63,18 @@ $(document).ready(function() {
                     window.location.href = "/login";
                 });
             },
-            error: function() {
-                Swal.fire("Erro", "Não foi possível cadastrar o usuário.", "error");
+            error: function(xhr) {
+                const errosValidacao = xhr.responseJSON?.errors;
+                const primeiroErro = errosValidacao
+                    ? Object.values(errosValidacao).flat()[0]
+                    : null;
+                const mensagem = primeiroErro
+                    || xhr.responseJSON?.mensagem
+                    || xhr.responseJSON?.message
+                    || "Não foi possível cadastrar o usuário.";
+
+                Swal.fire("Erro", mensagem, "error");
+                botao.prop("disabled", false).text("CADASTRAR USUÁRIO");
             }
         });        
 

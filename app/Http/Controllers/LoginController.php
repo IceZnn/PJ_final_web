@@ -37,13 +37,19 @@ class LoginController extends Controller
         $tokenUsuario->valido_ate = now()->addDays(2);
         $tokenUsuario->save();
 
-        return response()->json([
+        $response = response()->json([
             'erro' => 'n',
             'mensagem' => 'Login realizado com sucesso!',
             'token' => $tokenUsuario->token,
             'usuario_id' => $usuario->id,
             'redirect' => route('inicio'),
         ], 200);
+
+        if ($request->routeIs('login.autenticar')) {
+            return $response->cookie('token', $tokenUsuario->token, 60 * 24 * 2, '/', null, $request->isSecure(), true, false, 'lax');
+        }
+
+        return $response;
     }
 
     public function sair(Request $request)

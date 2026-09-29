@@ -38,7 +38,6 @@ $(document).ready(function () {
 
                 localStorage.setItem("token_usuario", response.token);
                 localStorage.setItem("usuario_id", response.usuario_id);
-                console.log("Token do usuário:", response.token);
 
                 Swal.fire({
                     icon: "success",
@@ -50,7 +49,14 @@ $(document).ready(function () {
                 });
             },
             error: function (xhr) {
-                const mensagem = xhr.responseJSON?.message || "CPF ou senha inválidos.";
+                const errosValidacao = xhr.responseJSON?.errors;
+                const primeiroErro = errosValidacao
+                    ? Object.values(errosValidacao).flat()[0]
+                    : null;
+                const mensagem = primeiroErro
+                    || xhr.responseJSON?.mensagem
+                    || xhr.responseJSON?.message
+                    || "Não foi possível conectar ao servidor. Tente novamente.";
 
                 Swal.fire({
                     icon: "error",

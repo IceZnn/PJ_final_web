@@ -9,6 +9,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src=" https://cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js "></script>
 	@vite(['resources/css/app.css', 'resources/js/login.js'])
 	<title>Login</title>
 </head>
@@ -28,7 +29,7 @@
 	<main class="container formulario auth-card">
 		<h2 class="titulo">Login</h2>
 
-		<form id="formulario-login" method="POST" action="{{ route('api.login') }}">
+		<form id="formulario-login" method="POST" action="{{ route('login.autenticar') }}">
 			@csrf
 			<div class="row g-4 justify-content-center">
 				<div class="col-lg-8 col-md-10 col-sm-12">

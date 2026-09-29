@@ -25,7 +25,11 @@ class DesperdicioController extends Controller
 
         $registro = Desperdicio::query()
             ->when($usuarioId, fn ($query) => $query->forUsuario((int) $usuarioId))
-            ->findOrFail($id);
+            ->find($id);
+
+        if (! $registro) {
+            return $this->registroNaoEncontrado($request);
+        }
 
         return view('desperdicio_detalhes', compact('registro'));
     }
@@ -36,7 +40,11 @@ class DesperdicioController extends Controller
 
         $registro = Desperdicio::query()
             ->when($usuarioId, fn ($query) => $query->forUsuario((int) $usuarioId))
-            ->findOrFail($id);
+            ->find($id);
+
+        if (! $registro) {
+            return $this->registroNaoEncontrado($request);
+        }
 
         $registro->delete();
 
@@ -111,7 +119,11 @@ class DesperdicioController extends Controller
 
         $registro = Desperdicio::query()
             ->forUsuario((int) $usuarioId)
-            ->findOrFail($dados['refeicao_id']);
+            ->find($dados['refeicao_id']);
+
+        if (! $registro) {
+            return $this->registroNaoEncontrado($request);
+        }
 
         $registro->peso_desperdicio = (float) $dados['peso_desperdicio'];
         $registro->save();
@@ -120,5 +132,16 @@ class DesperdicioController extends Controller
             'erro' => 'n',
             'mensagem' => 'Peso do desperdício registrado com sucesso.',
         ], 200);
+    }
+
+    private function registroNaoEncontrado(Request $request)
+    {
+        $mensagem = 'Registro de desperdício não encontrado ou indisponível para este usuário.';
+
+        if ($request->expectsJson()) {
+            return response()->json(['mensagem' => $mensagem], 404);
+        }
+
+        return response()->view('desperdicio_nao_encontrado', compact('mensagem'), 404);
     }
 }
