@@ -13,6 +13,10 @@ Route::post('/login', [LoginController::class, 'autenticar'])->name('login.auten
 Route::get('/cadastro-usuario', [UsuarioController::class, 'cadastro_usuario_html'])->name('cadastro.usuario');
 Route::post('/cadastro_usuario', [UsuarioController::class, 'cadastro_usuario']);
 
+Route::get('/luzes', function () {
+    return view('extras.luzes');
+});
+
 Route::middleware('logado')->group(function () {
     Route::view('/inicio', 'inicio')->name('inicio');
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');

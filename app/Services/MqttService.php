@@ -28,11 +28,11 @@ class MqttService
             ->setUseTls(true);
         
         $mqtt->connect($settings, true);
-        echo("Conectado no HIVE");
+        echo("Conectado no HIVE \n");
 
         $mqtt->subscribe($topico, function ($topic, $message) {
 
-        echo("Mensagem recebida no tópico");
+        echo("Mensagem recebida no tópico\n");
         echo $message . "\n";
 
         $dados = json_decode($message, true);
@@ -43,12 +43,12 @@ class MqttService
             'umidade' => $dados['umidade'],
         ]);
 
-        echo("Dados salvos no banco de dados");
+        echo("Dados salvos no banco de dados\n");
 
 
         },0);
 
-        echo("Aguardando mensagens no tópico: " . $topico . "\n");
+        echo("Aguardando mensagens no tópico: \n" . $topico . "\n");
 
         $mqtt->loop(true);
     }
