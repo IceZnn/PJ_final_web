@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LeituraController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DesperdicioController;
@@ -22,3 +23,6 @@ Route::post('/desperdicios', [DesperdicioController::class, 'salvar'])
 Route::post('/desperdicios/peso', [DesperdicioController::class, 'salvarPeso'])
     ->middleware('token.usuario')
     ->name('api.desperdicios.peso');
+
+Route::post('/leituras', [LeituraController::class, 'store'])
+    ->name('leituras.store');
