@@ -105,16 +105,17 @@
                         </div>
 
                         <div class="alert-card mt-4">
-                            <p class="dashboard-label text-uppercase mb-3">Situação atual</p>
-                            <div class="alert-circle">
-                                <span>!</span>
+                            <p class="dashboard-label text-uppercase mb-2">Indicador IoT da semana</p>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <span class="rounded-circle bg-{{ $indicadorSemanal['cor'] === 'amarelo' ? 'warning' : ($indicadorSemanal['cor'] === 'verde' ? 'success' : 'danger') }}"
+                                    style="width: 24px; height: 24px; box-shadow: 0 0 18px currentColor;"
+                                    aria-label="LED {{ $indicadorSemanal['cor'] }}"></span>
+                                <strong class="text-capitalize">{{ $indicadorSemanal['cor'] }}</strong>
                             </div>
                             <p class="alert-text mb-0">
-                                @if ($turnoCritico && $turnoCritico['atual'] > $turnoCritico['meta'])
-                                    Atenção no turno de {{ strtolower($turnoCritico['turno']) }}: {{ number_format($turnoCritico['atual'], 1, ',', '.') }}% de desperdício.
-                                @else
-                                    O desempenho está estável e dentro da meta esperada.
-                                @endif
+                                Média: {{ number_format($indicadorSemanal['media_semanal_kg'], 2, ',', '.') }} kg
+                                em {{ $indicadorSemanal['registros_considerados'] }} registro(s) nesta semana.
+                                O ESP32 consulta esse indicador pela API.
                             </p>
                         </div>
                     </div>

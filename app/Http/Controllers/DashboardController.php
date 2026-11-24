@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Desperdicio;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Date;
+use App\Services\IndicadorDesperdicioSemanal;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(IndicadorDesperdicioSemanal $indicador)
     {
         $usuarioId = request()->attributes->get('usuario') ?? request()->query('usuario_id');
 
@@ -109,7 +108,7 @@ class DashboardController extends Controller
             ];
         })->values()->all();
 
-        $turnoCritico = collect($turnos)->sortByDesc('atual')->first();
+        $indicadorSemanal = $indicador->paraUsuario((int) $usuarioId);
 
         return view('dashboard', [
             'aproveitamentoMedio' => number_format($aproveitamentoMedio, 1, ',', '.'),
@@ -120,7 +119,7 @@ class DashboardController extends Controller
             'monthlyData' => $monthly,
             'periodData' => $periodoData,
             'turnos' => $turnos,
-            'turnoCritico' => $turnoCritico,
+            'indicadorSemanal' => $indicadorSemanal,
             'marginTrend' => $registrosComPeso->isEmpty() ? 'Sem peso registrado' : 'Dados atualizados em ' . now()->format('d/m/Y'),
         ]);
     }

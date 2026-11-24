@@ -11,7 +11,6 @@ export default defineConfig({
                 'resources/js/cadastro_usuario.js',
                 'resources/js/login.js',
                 'resources/js/inicio.js',
-                'resources/js/luzes.js',
             ],
             refresh: true,
         }),

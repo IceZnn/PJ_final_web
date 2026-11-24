@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LedStatusController;
+use App\Http\Controllers\DesperdicioController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\DesperdicioController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return response()->json([
@@ -22,3 +23,7 @@ Route::post('/desperdicios', [DesperdicioController::class, 'salvar'])
 Route::post('/desperdicios/peso', [DesperdicioController::class, 'salvarPeso'])
     ->middleware('token.usuario')
     ->name('api.desperdicios.peso');
+
+Route::get('/led/status', [LedStatusController::class, 'show'])
+    ->middleware('token.usuario')
+    ->name('api.led.status');
